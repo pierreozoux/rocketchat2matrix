@@ -107,6 +107,9 @@ Then you can restart with an empty but quite equal server, following the instruc
 - Getting data from Rocket.Chat via manual mongodb export
 - Room to Channel conversion:
   - Read-only attributes of channels not converted to power levels due to complexity
+  - events subscription-role-removed and subscription-role-added not handled
+    - could lead to a case where the creator designated a new owner and left
+      - this case could be recovered by inviting the creator again in matrix
 - Reactions:
   - So far only reactions used in our chats have been translated
   - Individual logos of _netzbegruenung_ and _verdigado_ have been replaced by a generic sunflower
@@ -115,6 +118,15 @@ Then you can restart with an empty but quite equal server, following the instruc
 - Several state change events are not translated, as the previous state is unknown, but the final state should be equal
 - If the root message of a thread is deleted or of a deleted user, the thread will be skipped
 - The script follows a design to easily continue a migration if the script crashed by restarting it
+- files and attachments
+  - files, citations and external images are not handled
+  - description of file not handled
+- avatars are not uploaded (for users and room)
+- bot messages are not imported
+- livechat are not imported
+- rocketchat mentions are not translated into matrix mentions
+- emoji in text are left as text
+- md is escaped (`*` becomes `\*`)
 
 ## Contributing
 
