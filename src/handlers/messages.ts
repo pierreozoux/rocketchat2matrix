@@ -16,6 +16,7 @@ import reactionKeys from '../reactions.json'
 import { executeAndHandleMissingMember } from './rooms'
 import { AxiosError } from 'axios'
 import * as fs from 'fs'
+import * as showdown from 'showdown'
 
 const applicationServiceToken = process.env.AS_TOKEN || ''
 if (!applicationServiceToken) {
@@ -100,6 +101,17 @@ export type ReactionKeys = {
   [key: string]: string
 }
 
+function formatMessage(msg: string): string {
+  const converter = new showdown.Converter()
+  const emojified = emoji.emojify(msg)
+  const htmled = converter.makeHtml(emojified)
+  if (htmled.length - emojified.length == 7) { // markdown adds <p></p> tags, if it only adds this, don't
+    return emojified
+  } else {
+    return htmled
+  }
+}
+
 /**
  * Translate a Rocket.Chat message to a Matrix message event body
  * @param rcMessage The Rocket.Chat message to convert
@@ -107,7 +119,7 @@ export type ReactionKeys = {
  */
 export function mapMessage(rcMessage: RcMessage): MatrixMessage {
   return {
-    body: rcMessage.msg,
+    body: formatMessage(rcMessage.msg),
     msgtype: rcMessage.type,
     type: 'm.room.message',
   }
